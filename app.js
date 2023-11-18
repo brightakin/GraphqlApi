@@ -5,6 +5,7 @@ const authRoutes = require("./routes/auth");
 const mongoose = require("mongoose");
 const path = require("path");
 const multer = require("multer");
+const { Server } = require("socket.io");
 
 const app = express();
 const fileStorage = multer.diskStorage({
@@ -55,6 +56,10 @@ mongoose
     "mongodb+srv://brightakin:toluwase@cluster0.bjlwdv5.mongodb.net/?retryWrites=true&w=majority"
   )
   .then((result) => {
-    app.listen(8080);
+    const server = app.listen(8080);
+    const io = require("./socket").init(server);
+    io.on("connection", (socket) => {
+      console.log("client connected");
+    });
   })
   .catch((err) => console.log(err));
